@@ -1,0 +1,86 @@
+version: '3.7'
+
+services:
+  api-gateway:
+    image: faizanakhtar35/mmv2-api-gateway:0.0.2-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "9500:9500"
+    networks:
+      - microservice-network
+    depends_on:
+      - eureka-naming-server
+      - rabbitmq
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+
+  rabbitmq:
+    image: rabbitmq:3.8.12-management
+    mem_limit: 300m
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - microservice-network
+
+  zipkin-server:
+    image: openzipkin/zipkin:2.23
+    mem_limit: 300m
+    ports:
+      - "9411:9411"
+    networks:
+      - microservice-network
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    restart: always #Restart if there is a problem starting up
+
+  service_B:
+    image: faizanakhtar35/mmv2-service_b:0.0.2-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "9300:9300"
+    networks:
+      - microservice-network
+    depends_on:
+      - eureka-naming-server
+      - rabbitmq
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+
+  service_A:
+    image: faizanakhtar35/mmv2-service_a:0.0.2-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "9200:9200"
+    networks:
+      - microservice-network
+    depends_on:
+      - eureka-naming-server
+      - rabbitmq
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+
+  eureka-naming-server:
+    image: faizanakhtar35/mmv2-eureka-naming-server:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "8761:8761"
+    networks:
+      - microservice-network
+
+networks:
+  microservice-network:

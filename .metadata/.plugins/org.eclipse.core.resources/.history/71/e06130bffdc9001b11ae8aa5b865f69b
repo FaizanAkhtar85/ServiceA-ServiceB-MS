@@ -1,0 +1,13 @@
+package com.example.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HomeContollerForB {
+	
+	@GetMapping("service-B/homeForB")
+	public String homeForB() {
+		return "Response from service B";
+	}
+}

@@ -1,0 +1,6 @@
+server.port=9300
+spring.application.name=service-B
+eureka.client.service-url.defaultzone=http://http://localhost:9000/eureka
+spring.cloud.config.import-check.enabled=false
+
+

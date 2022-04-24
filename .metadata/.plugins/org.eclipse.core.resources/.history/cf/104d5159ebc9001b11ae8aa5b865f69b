@@ -1,0 +1,8 @@
+package com.example.demo.controller;
+
+public class HomeContollerForB {
+
+	public String homeForB() {
+		return "Response from service B";
+	}
+}

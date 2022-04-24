@@ -1,0 +1,10 @@
+package com.example.demo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+public class HomeContollerForB {
+	@GetMapping("/homeForB")
+	public String homeForB() {
+		return "Response from service B";
+	}
+}
